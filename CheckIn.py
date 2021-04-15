@@ -43,7 +43,7 @@ class checkIn:
         #keypadQFrame = tk.Frame(self.keypad,width=300,height=480,bg=self.defaultBg)
         #keypadQFrame.grid(column=0,row=0)
 
-        self.choices = {"checkBool":None,'staffBool':None,'ID':None}
+        self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
         TopFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         TopFrame.grid(column=0,row=0,columnspan=2)
         CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
@@ -103,13 +103,35 @@ class checkIn:
         self.setVariable('ID','quit','prompts')
         self.window.destroy()
 
+    def checkSuccess(self,success):
+        if self.choices['checkBool'] == True:
+            checkStr = 'in'
+        elif self.choices['checkBool'] == False:
+            checkStr = 'out'
+        if success == True:
+            successStr = ''
+        elif success == False:
+            successSrt = ' not'
+        print('Device Check %s was%s successful'%(checkStr,successStr))
+        keypadLabelFrame = tk.Frame(self.prompts,width=500,bg=self.defaultBg)
+        keypadLabelFrame.grid(column=0,row=0,columnspan=2)
+        
+        self.setVariable('checkBool',None,'prompts')
+        self.setVariable('staffBool',None,'prompts')
+        self.setVariable('ID',None,'keypad')
+        successText = tk.Label(self.prompts,text='Device Check %s was%s successful'%(checkStr,successStr),bg=self.defaultBg)
+        successText.grid(column=0,row=0,columnspan=2)
+        self.window.after(4000,lambda:self.setVariable('Done',True,'done'))
+        
+        
+
     def createKeypad(self):
         self.keypadEnter =''
         
         keypadLabelFrame = tk.Frame(self.prompts,width=500,bg=self.defaultBg)
         keypadLabelFrame.grid(column=0,row=0,columnspan=2)
         keypadLabel = tk.Label(self.prompts,text='Please enter your Student ID',bg=self.defaultBg,font=self.defaultFont,pady=185)
-        keypadLabel.grid(column=0,row=0,columnspan=2)
+        keypadLabel.grid(column=0,row=1,columnspan=2)
         #CancelTopFrame = tk.LabelFrame(self.prompts,width=500,height=360,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         #CancelTopFrame.grid(column=0,row=1,columnspan=2)
         CancelRightFrame = tk.LabelFrame(self.prompts,width=235,bg=self.defaultBg,highlightthickness=0,relief='flat')
@@ -144,12 +166,11 @@ class checkIn:
 
     def findBarcodes(self):
         keyboard.add_hotkey('esc',lambda:self.exitSys())
-        self.choices = {"checkBool":None,'staffBool':None,'ID':None}
         print('listening')
         while True:
+            self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
             if self.choices['ID'] == 'quit':
                 break
-            time.sleep(0.1)
             print('Searching for QR Codes')
         
             '''while True:
@@ -168,7 +189,7 @@ class checkIn:
             self.checkQs()
             while True:
                 self.window.update()
-                if self.choices['ID'] != None:
+                if self.choices['Done'] == True:
                     break
 
     def searchSheet(self):
@@ -190,10 +211,11 @@ class checkIn:
             print('yes')
         elif self.choices['checkBool'] == True | self.checkBool == False:
             print('yes')
-        print()
+        
 
     def writeToSheet(self):
         print(self.choices)
+        self.checkSuccess(True)
         #print(self.barcodeData)
         
 
