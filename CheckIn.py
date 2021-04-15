@@ -1,15 +1,20 @@
 from datetime import datetime
 from PIL import ImageTk,Image  
+
 import tkinter as tk
 from imutils.video import VideoStream
 from pyzbar import pyzbar
-import argparse,imutils,time,cv2
+import argparse,imutils,time,cv2,keyboard
 
 def rgbtohex(r,g,b):
         return f'#{r:02x}{g:02x}{b:02x}'
 
+
+
+
 class checkIn:
     def __init__(self):
+        
         self.defaultFont = 'Helvetica 16 bold'
         self.buttonFont = 'Helvetica 14 bold'
         self.defaultBg = rgbtohex(191, 14, 62)
@@ -99,7 +104,8 @@ class checkIn:
         self.window.destroy()
 
     def exitSys(self):
-        print()
+        self.setVariable('ID','quit','prompts')
+        self.window.destroy()
 
     def createKeypad(self):
         self.keypadEnter =''
@@ -137,7 +143,12 @@ class checkIn:
         #
 
     def findBarcodes(self):
+        keyboard.add_hotkey('esc',lambda:self.exitSys())
+        self.choices = {"checkBool":None,'staffBool':None,'ID':None}
+        print('listening')
         while True:
+            if self.choices['ID'] == 'quit':
+                break
             time.sleep(0.1)
             print('Searching for QR Codes')
         
@@ -170,8 +181,15 @@ class checkIn:
         #       can't be checked in
         #   else if checkBool == False and choices['checkBool'] == True:
         #       cant't be checked Out
-        
-        #   
+        self.checkBool = None
+        if self.choices['checkBool'] == False | self.checkBool == False:
+            print('yes')
+        elif self.choices['checkBool'] == True | self.checkBool == True:
+            print('yes')
+        elif self.choices['checkBool'] == False | self.checkBool == True:
+            print('yes')
+        elif self.choices['checkBool'] == True | self.checkBool == False:
+            print('yes')
         print()
 
     def writeToSheet(self):
@@ -181,7 +199,7 @@ class checkIn:
 
 
 def main():
-    #checkIn().terrapin()
+    
     checkIn().findBarcodes()
 
 if __name__ == "__main__":
