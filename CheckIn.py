@@ -21,7 +21,7 @@ class checkIn:
         self.keypad.grid(column=1,row=0)
         self.prompts = tk.Canvas(self.window,bd=0,width=500,height=480,highlightthickness=0,bg=self.defaultBg)
         self.prompts.grid(column=0,row=0)
-        self.vs = VideoStream(src=0).start()
+        #self.vs = VideoStream(src=0).start()
         #self.vs = VideoStream(usePiCamera=True).start()
         print('Video stream started') 
         
@@ -39,10 +39,13 @@ class checkIn:
         self.prompts = tk.Canvas(self.window,bd=0,width=500,height=480,highlightthickness=0,bg=self.defaultBg)
         self.prompts.grid(column=0,row=0)
 
+        #keypadQFrame = tk.Frame(self.keypad,width=300,height=480,bg=self.defaultBg)
+        #keypadQFrame.grid(column=0,row=0)
+
         self.choices = {"checkBool":None,'staffBool':None,'ID':None}
-        TopFrame = tk.LabelFrame(self.prompts,width=500,height=144,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        TopFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         TopFrame.grid(column=0,row=0,columnspan=2)
-        CancelFrame = tk.LabelFrame(self.prompts,width=500,height=141,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         CancelFrame.grid(column=0,row=3,columnspan=2)
         Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
         Cancel.grid(column=1,row=4)
@@ -55,9 +58,9 @@ class checkIn:
         OutQ.grid(column=1,row=2,padx=(0,20))
     
     def staffQs(self):
-        TopFrame = tk.LabelFrame(self.prompts,width=500,height=144,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        TopFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         TopFrame.grid(column=0,row=0,columnspan=2)
-        CancelFrame = tk.LabelFrame(self.prompts,width=500,height=141,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         CancelFrame.grid(column=0,row=3,columnspan=2)
         Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
         Cancel.grid(column=1,row=4)
@@ -69,12 +72,9 @@ class checkIn:
         teachQ = tk.Button(self.prompts,text='Teacher',width=25,height=7,command=lambda:[self.setVariable('staffBool',False,'prompts'),self.setVariable('ID','staff','prompts'),self.writeToSheet()])
         teachQ.grid(column=1,row=2,padx=(0,20))
 
-
     def getTime(self):
         self.date = datetime.now().strftime('%Y-%m-%d %H:%M')
         return self.date
-
-    
 
     def keyID(self,value):
         if value == 'clear': self.keypadEnter = ''
@@ -96,48 +96,52 @@ class checkIn:
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
         self.setVariable('ID',None,'keypad')
+        self.window.destroy()
+
+    def exitSys(self):
+        print()
 
     def createKeypad(self):
         self.keypadEnter =''
         
         keypadLabelFrame = tk.Frame(self.prompts,width=500,bg=self.defaultBg)
-        keypadLabelFrame.grid(column=0,row=1)
+        keypadLabelFrame.grid(column=0,row=0)
         keypadLabel = tk.Label(self.prompts,text='Please enter your Student ID',bg=self.defaultBg,font=self.defaultFont)
         keypadLabel.grid(column=0,row=0)
-        num1 = tk.Button(self.keypad,text='1',width=10,height=7,command=lambda:self.keyID('1'))
+        num1 = tk.Button(self.keypad,text='1',width=8,height=6,command=lambda:self.keyID('1'))
         num1.grid(column=0,row=0)
-        num2 = tk.Button(self.keypad,text='2',width=10,height=7,command=lambda:self.keyID('2'))
+        num2 = tk.Button(self.keypad,text='2',width=8,height=6,command=lambda:self.keyID('2'))
         num2.grid(column=1,row=0)
-        num3 = tk.Button(self.keypad,text='3',width=10,height=7,command=lambda:self.keyID('3'))
+        num3 = tk.Button(self.keypad,text='3',width=8,height=6,command=lambda:self.keyID('3'))
         num3.grid(column=2,row=0)
-        num4 = tk.Button(self.keypad,text='4',width=10,height=7,command=lambda:self.keyID('4'))
+        num4 = tk.Button(self.keypad,text='4',width=8,height=6,command=lambda:self.keyID('4'))
         num4.grid(column=0,row=1)
-        num5 = tk.Button(self.keypad,text='5',width=10,height=7,command=lambda:self.keyID('5'))
+        num5 = tk.Button(self.keypad,text='5',width=8,height=6,command=lambda:self.keyID('5'))
         num5.grid(column=1,row=1)
-        num6 = tk.Button(self.keypad,text='6',width=10,height=7,command=lambda:self.keyID('6'))
+        num6 = tk.Button(self.keypad,text='6',width=8,height=6,command=lambda:self.keyID('6'))
         num6.grid(column=2,row=1)
-        num7 = tk.Button(self.keypad,text='7',width=10,height=7,command=lambda:self.keyID('7'))
+        num7 = tk.Button(self.keypad,text='7',width=8,height=6,command=lambda:self.keyID('7'))
         num7.grid(column=0,row=2)
-        num8 = tk.Button(self.keypad,text='8',width=10,height=7,command=lambda:self.keyID('8'))
+        num8 = tk.Button(self.keypad,text='8',width=8,height=6,command=lambda:self.keyID('8'))
         num8.grid(column=1,row=2)
-        num9 = tk.Button(self.keypad,text='9',width=10,height=7,command=lambda:self.keyID('9'))
+        num9 = tk.Button(self.keypad,text='9',width=8,height=6,command=lambda:self.keyID('9'))
         num9.grid(column=2,row=2)
-        num0 = tk.Button(self.keypad,text='0',width=10,height=7,command=lambda:self.keyID('0'))
+        num0 = tk.Button(self.keypad,text='0',width=8,height=6,command=lambda:self.keyID('0'))
         num0.grid(column=0,row=3)
-        numE = tk.Button(self.keypad,text='Enter',width=10,height=7,command=lambda:[self.setVariable('ID',self.keypadEnter,'keypad'),self.writeToSheet(),self.keyID('clear')])
+        numE = tk.Button(self.keypad,text='Enter',width=8,height=6,command=lambda:[self.setVariable('ID',self.keypadEnter,'keypad'),self.writeToSheet(),self.keyID('clear')])
         numE.grid(column=1,row=3)
-        numC = tk.Button(self.keypad,text='Clear',width=10,height=7,command=lambda:self.keyID('clear'))
+        numC = tk.Button(self.keypad,text='Clear',width=8,height=6,command=lambda:self.keyID('clear'))
         numC.grid(column=2,row=3)
         #self.window.mainloop()
         #self.window.update_idletasks()
-        #self.window.overrideredirect(1)
+        #
 
     def findBarcodes(self):
         while True:
             time.sleep(0.1)
             print('Searching for QR Codes')
         
-            while True:
+            '''while True:
                 self.window.update()
                 frame = self.vs.read()
 
@@ -147,8 +151,9 @@ class checkIn:
                     for barcode in barcodes:
                         self.barcodeData = barcode.data.decode('utf-8')
                         print('QR Found')
-                    break
+                    break'''
             #self.terrapin()
+            self.window.overrideredirect(1)
             self.checkQs()
             while True:
                 self.window.update()
@@ -171,7 +176,7 @@ class checkIn:
 
     def writeToSheet(self):
         print(self.choices)
-        print(self.barcodeData)
+        #print(self.barcodeData)
         
 
 
@@ -197,7 +202,7 @@ if __name__ == "__main__":
 #    
 # 
 # TO DO:
-#   
+#   git
 #   
 # 
 # 
