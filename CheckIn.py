@@ -1,6 +1,5 @@
 from datetime import datetime
 from PIL import ImageTk,Image  
-
 import tkinter as tk
 from imutils.video import VideoStream
 from pyzbar import pyzbar
@@ -34,7 +33,6 @@ class checkIn:
         TerrapinLogo = tk.Label(self.keypad,image=TLogo)
         TerrapinLogo.image=TLogo
         TerrapinLogo.grid(row=0,column=0)
-        
          
     def checkQs(self):
         self.keypad = tk.Canvas(self.window,bd=0,width=300,height=480,highlightthickness=0,bg=self.defaultBg)
@@ -51,7 +49,7 @@ class checkIn:
         CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         CancelFrame.grid(column=0,row=3,columnspan=2)
         Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
-        Cancel.grid(column=1,row=4)
+        Cancel.grid(column=0,row=4)
         
         Q1 = tk.Label(self.prompts,text='Are you checking a device in or out?',bg=self.defaultBg,font=self.defaultFont)
         Q1.grid(column=0,row=1,columnspan=2)
@@ -66,7 +64,7 @@ class checkIn:
         CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
         CancelFrame.grid(column=0,row=3,columnspan=2)
         Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
-        Cancel.grid(column=1,row=4)
+        Cancel.grid(column=0,row=4)
 
         Q1 = tk.Label(self.prompts,text='Are you a student or a teacher?',bg=self.defaultBg,font=self.defaultFont)
         Q1.grid(column=0,row=1,columnspan=2)
@@ -99,7 +97,7 @@ class checkIn:
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
         self.setVariable('ID',None,'keypad')
-        self.window.destroy()
+        self.checkQs()
 
     def exitSys(self):
         self.setVariable('ID','quit','prompts')
@@ -109,9 +107,16 @@ class checkIn:
         self.keypadEnter =''
         
         keypadLabelFrame = tk.Frame(self.prompts,width=500,bg=self.defaultBg)
-        keypadLabelFrame.grid(column=0,row=0)
-        keypadLabel = tk.Label(self.prompts,text='Please enter your Student ID',bg=self.defaultBg,font=self.defaultFont)
-        keypadLabel.grid(column=0,row=0)
+        keypadLabelFrame.grid(column=0,row=0,columnspan=2)
+        keypadLabel = tk.Label(self.prompts,text='Please enter your Student ID',bg=self.defaultBg,font=self.defaultFont,pady=185)
+        keypadLabel.grid(column=0,row=0,columnspan=2)
+        #CancelTopFrame = tk.LabelFrame(self.prompts,width=500,height=360,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        #CancelTopFrame.grid(column=0,row=1,columnspan=2)
+        CancelRightFrame = tk.LabelFrame(self.prompts,width=235,bg=self.defaultBg,highlightthickness=0,relief='flat')
+        CancelRightFrame.grid(column=1,row=2)
+        Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel,)
+        Cancel.grid(column=0,row=2,padx=50)
+
         num1 = tk.Button(self.keypad,text='1',width=8,height=6,command=lambda:self.keyID('1'))
         num1.grid(column=0,row=0)
         num2 = tk.Button(self.keypad,text='2',width=8,height=6,command=lambda:self.keyID('2'))
@@ -159,7 +164,7 @@ class checkIn:
                         print('QR Found')
                     break'''
             #self.terrapin()
-            self.window.overrideredirect(1)
+            #self.window.overrideredirect(1)
             self.checkQs()
             while True:
                 self.window.update()
