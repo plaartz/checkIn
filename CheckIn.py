@@ -10,8 +10,6 @@ def rgbtohex(r,g,b):
         return f'#{r:02x}{g:02x}{b:02x}'
 
 
-
-
 class checkIn:
     def __init__(self):
         
@@ -137,10 +135,7 @@ class checkIn:
         numE = tk.Button(self.keypad,text='Enter',width=8,height=6,command=lambda:[self.setVariable('ID',self.keypadEnter,'keypad'),self.writeToSheet(),self.keyID('clear')])
         numE.grid(column=1,row=3)
         numC = tk.Button(self.keypad,text='Clear',width=8,height=6,command=lambda:self.keyID('clear'))
-        numC.grid(column=2,row=3)
-        #self.window.mainloop()
-        #self.window.update_idletasks()
-        #
+        numC.grid(column=2,row=3)   
 
     def findBarcodes(self):
         keyboard.add_hotkey('esc',lambda:self.exitSys())
@@ -199,7 +194,6 @@ class checkIn:
 
 
 def main():
-    
     checkIn().findBarcodes()
 
 if __name__ == "__main__":
@@ -210,10 +204,10 @@ if __name__ == "__main__":
 #*   If len barcodes > 0
 #*   read barcode data
 #   run through database
-#   is checked out (true/false)
-#   is student or teacher
-#   if student (student ID)
-#   if teacher (sub1,2,3...)
+#*   is checked out (true/false)
+#*   is student or teacher
+#*   if student (student ID)
+#*   if teacher (sub1,2,3...)
 #   write to sheet
 #   Rows: Device ID, Is Checked Out, Last Checked Out By, Check Out Date, Check In Date
 #   
