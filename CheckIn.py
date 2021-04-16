@@ -3,7 +3,7 @@ from PIL import ImageTk,Image
 import tkinter as tk
 from imutils.video import VideoStream
 from pyzbar import pyzbar
-import argparse,imutils,time,cv2,keyboard
+import argparse,imutils,time,cv2,keyboard,sys
 
 def rgbtohex(r,g,b):
         return f'#{r:02x}{g:02x}{b:02x}'
@@ -11,7 +11,8 @@ def rgbtohex(r,g,b):
 
 class checkIn:
     def __init__(self):
-        
+        self.running = True
+        self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
         self.defaultFont = 'Helvetica 16 bold'
         self.buttonFont = 'Helvetica 14 bold'
         self.defaultBg = rgbtohex(191, 14, 62)
@@ -97,11 +98,15 @@ class checkIn:
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
         self.setVariable('ID',None,'keypad')
-        self.checkQs()
+
+        self.exitSys()
+        #self.checkQs()
 
     def exitSys(self):
-        self.setVariable('ID','quit','prompts')
-        self.window.destroy()
+        self.choices['ID'] = 'quit'
+        self.choices['Done'] = True
+        
+        
 
     def checkSuccess(self,success):
         if self.choices['checkBool'] == True:
@@ -165,12 +170,14 @@ class checkIn:
         numC.grid(column=2,row=3)   
 
     def findBarcodes(self):
-        keyboard.add_hotkey('esc',lambda:self.exitSys())
+        keyboard.add_hotkey('q',lambda:self.exitSys())
         print('listening')
         while True:
-            self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
+            
             if self.choices['ID'] == 'quit':
+                self.window.destroy()
                 break
+            self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
             print('Searching for QR Codes')
         
             '''while True:
@@ -185,12 +192,13 @@ class checkIn:
                         print('QR Found')
                     break'''
             #self.terrapin()
-            #self.window.overrideredirect(1)
+            self.window.overrideredirect(1)
             self.checkQs()
             while True:
                 self.window.update()
                 if self.choices['Done'] == True:
                     break
+        
 
     def searchSheet(self):
         #   Search if device is already checked out
@@ -221,6 +229,7 @@ class checkIn:
 
 
 def main():
+    
     checkIn().findBarcodes()
 
 if __name__ == "__main__":
