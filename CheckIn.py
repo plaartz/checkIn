@@ -18,6 +18,7 @@ class checkIn:
         self.defaultBg = rgbtohex(191, 14, 62)
         
         self.window = tk.Tk()
+        self.window.config(cursor='none')
         self.testData = 10
         self.window.geometry('800x480')
         self.keypad = tk.Canvas(self.window,bd=0,width=300,height=480,highlightthickness=0,bg=self.defaultBg)
@@ -207,7 +208,7 @@ class checkIn:
         #print(self.barcodeData)
 
 
-     def checkSuccess(self,success):
+    def checkSuccess(self,success):
         if self.choices['checkBool'] == True:
             checkStr = 'in'
         elif self.choices['checkBool'] == False:
