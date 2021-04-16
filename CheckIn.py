@@ -98,15 +98,11 @@ class checkIn:
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
         self.setVariable('ID',None,'keypad')
-
-        self.exitSys()
-        #self.checkQs()
+        self.checkQs()
 
     def exitSys(self):
         self.choices['ID'] = 'quit'
         self.choices['Done'] = True
-        
-        
 
     def checkSuccess(self,success):
         if self.choices['checkBool'] == True:
@@ -124,7 +120,7 @@ class checkIn:
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
         self.setVariable('ID',None,'keypad')
-        successText = tk.Label(self.prompts,text='Device Check %s was%s successful'%(checkStr,successStr),bg=self.defaultBg)
+        successText = tk.Label(self.prompts,text='Device Check %s was%s successful'%(checkStr,successStr),bg=self.defaultBg,font=self.defaultFont)
         successText.grid(column=0,row=0,columnspan=2)
         self.window.after(4000,lambda:self.setVariable('Done',True,'done'))
         
