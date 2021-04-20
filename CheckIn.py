@@ -174,7 +174,7 @@ class checkIn:
         
 
     def searchSheet(self):
-        self.wks = self.gc.open('test').sheet1
+        self.wks = self.gc.open('CSP Device Check In').sheet1
         
         self.sheetChoices = {'deviceID':None,'checkBool':None,'ID':None,'inDate':None,'outDate':None,'prevID':None,'row':None,'col':None}
         for iteration, row in enumerate(self.wks.get_all_values()):
