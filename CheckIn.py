@@ -29,14 +29,6 @@ class checkIn:
         self.vs = VideoStream(src=0).start()
         #self.vs = VideoStream(usePiCamera=True).start()
         print('Video stream started') 
-        
-        
-    def terrapin(self):
-        logo = Image.open('TPrepLogo.png').resize((300, 300), Image.ANTIALIAS)
-        TLogo = ImageTk.PhotoImage(logo)
-        TerrapinLogo = tk.Label(self.keypad,image=TLogo)
-        TerrapinLogo.image=TLogo
-        TerrapinLogo.grid(row=0,column=0)
          
 
     def checkQs(self):
