@@ -249,31 +249,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#*   Constant camera 
-#*   Looking for barcodes
-#*   If len barcodes > 0
-#*   read barcode data
-#*   run through database
-#*   is checked out (true/false)
-#*   is student or teacher
-#*   if student (student ID)
-#*   if teacher (sub1,2,3...)
-#*   write to sheet
-#*   Rows: Device ID, Is Checked Out, Last Checked Out By, Check Out Date, Check In Date, Prev ID
-#    
-# Build Container 
-# Mount project   
-#   
-#
-#   IDEAS:
-#   Override CheckIn
-#   
-#     
-# 
-# TO DO:
-#   git
-#   
-# 
-# 
-#
