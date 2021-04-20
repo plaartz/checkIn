@@ -57,12 +57,7 @@ class checkIn:
     
 
     def staffQs(self):
-        TopFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
-        TopFrame.grid(column=0,row=0,columnspan=2)
-        CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
-        CancelFrame.grid(column=0,row=3,columnspan=2)
-        Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
-        Cancel.grid(column=0,row=4)
+        
 
         Q1 = tk.Label(self.prompts,text='Are you a student or a teacher?',bg=self.defaultBg,font=self.defaultFont)
         Q1.grid(column=0,row=1,columnspan=2)
@@ -70,6 +65,13 @@ class checkIn:
         studQ.grid(column=0,row=2,padx=(20,0))
         teachQ = tk.Button(self.prompts,text='Teacher',width=25,height=7,command=lambda:[self.setVariable('staffBool',False,'prompts'),self.setVariable('ID','staff','prompts'),self.searchSheet()])
         teachQ.grid(column=1,row=2,padx=(0,20))
+        Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
+        Cancel.grid(column=0,row=4)
+        
+        CancelFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        CancelFrame.grid(column=0,row=3,columnspan=2)
+        TopFrame = tk.LabelFrame(self.prompts,width=500,height=125,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
+        TopFrame.grid(column=0,row=0,columnspan=2)
 
 
     def getTime(self):
@@ -222,6 +224,7 @@ class checkIn:
             self.errorFont = 'Helvetica 16 bold'
         elif success == False:
             successStr = ' not'
+            self.errorFont = 'Helvetica 12 bold'
             if error == 'ID Match':
                 errorMsg = 'Student ID does not match!'
             elif error == 'Already In':
