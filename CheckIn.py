@@ -9,32 +9,28 @@ import argparse,imutils,time,cv2,keyboard,sys,gspread
 def rgbtohex(r,g,b):
         return f'#{r:02x}{g:02x}{b:02x}'
 
-workingdir = '/users/realtbnrlrtzy/checkIn/'
-scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-credentials = ServiceAccountCredentials.from_json_keyfile_name(workingdir+'csp-device-check-in-970af875e5f4.json')
-gc = gspread.service_account(filename=workingdir+'csp-device-check-in-970af875e5f4.json')
 
 class checkIn:
     def __init__(self):
+        workingdir = '/users/realtbnrlrtzy/checkIn/'
         self.running = True
+        self.gc = gspread.service_account(filename=workingdir+'credentials.json')
         self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
         self.defaultFont = 'Helvetica 16 bold'
         self.buttonFont = 'Helvetica 14 bold'
         self.defaultBg = rgbtohex(191, 14, 62)
-        
         self.window = tk.Tk()
         self.window.config(cursor='none')
-        self.testData = 10
         self.window.geometry('800x480')
         self.keypad = tk.Canvas(self.window,bd=0,width=300,height=480,highlightthickness=0,bg=self.defaultBg)
         self.keypad.grid(column=1,row=0)
         self.prompts = tk.Canvas(self.window,bd=0,width=500,height=480,highlightthickness=0,bg=self.defaultBg)
         self.prompts.grid(column=0,row=0)
-        #self.vs = VideoStream(src=0).start()
+        self.vs = VideoStream(src=0).start()
         #self.vs = VideoStream(usePiCamera=True).start()
         print('Video stream started') 
         
-
+        
     def terrapin(self):
         logo = Image.open('TPrepLogo.png').resize((300, 300), Image.ANTIALIAS)
         TLogo = ImageTk.PhotoImage(logo)
@@ -122,8 +118,6 @@ class checkIn:
         keypadLabelFrame.grid(column=0,row=0,columnspan=2)
         keypadLabel = tk.Label(self.prompts,text='Please enter your Student ID',bg=self.defaultBg,font=self.defaultFont,pady=185)
         keypadLabel.grid(column=0,row=1,columnspan=2)
-        #CancelTopFrame = tk.LabelFrame(self.prompts,width=500,height=360,bg=self.defaultBg,highlightthickness=0,relief='flat',pady=0)
-        #CancelTopFrame.grid(column=0,row=1,columnspan=2)
         CancelRightFrame = tk.LabelFrame(self.prompts,width=235,bg=self.defaultBg,highlightthickness=0,relief='flat')
         CancelRightFrame.grid(column=1,row=2)
         Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel,)
@@ -157,27 +151,23 @@ class checkIn:
 
     def findBarcodes(self):
         keyboard.add_hotkey('q',lambda:self.exitSys())
-        print('listening')
+        print('Listening')
         while True:
-            
             if self.choices['ID'] == 'quit':
                 self.window.destroy()
                 break
             self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
             print('Searching for QR Codes')
-        
-            '''while True:
+            while True:
                 self.window.update()
                 frame = self.vs.read()
-
                 frame = imutils.resize(frame,width=400)
                 barcodes = pyzbar.decode(frame)
                 if len(barcodes) > 0: 
-                    for barcode in barcodes:
+                    for barcode in barcodes: 
                         self.barcodeData = barcode.data.decode('utf-8')
                         print('QR Found')
-                    break'''
-            #self.terrapin()
+                    break
             #self.window.overrideredirect(1)
             self.checkQs()
             while True:
@@ -187,23 +177,10 @@ class checkIn:
         
 
     def searchSheet(self):
-        #   Search if device is already checked out
-        #   if checkBool == False and choices['checkBool'] ==  False:
-        #       can be checked Out
-        #   else if checkBool == True and choices['checkBool'] == True:
-        #       can be checked In
-        #   else if checkBool == True and choices['checkBool'] == False:
-        #       can't be checked in
-        #   else if checkBool == False and choices['checkBool'] == True:
-        #       cant't be checked Out
-        self.wks = gc.open('test').sheet1
-
+        self.wks = self.gc.open('test').sheet1
         self.barcodeData = 'cl3203-s04'
-        
-
         self.sheetChoices = {'deviceID':None,'checkBool':None,'ID':None,'inDate':None,'outDate':None,'prevID':None,'row':None,'col':None}
         for iteration, row in enumerate(self.wks.get_all_values()):
-            print(row)
             if row[0] == self.barcodeData:
                 self.sheetChoices['checkBool'] = row[1].lower()
                 self.sheetChoices['ID'] = row[2]
@@ -211,7 +188,6 @@ class checkIn:
                 self.sheetChoices['outDate'] = row[4]
                 self.sheetChoices['row'] = iteration+1
                 if self.choices['checkBool'] == False and self.sheetChoices['checkBool'] == 'no': #  checking Out and is not Out
-                    
                     self.checkOut()
                 elif self.choices['checkBool'] == True and self.sheetChoices['checkBool'] == 'yes': # checking In and is Out
                     self.checkIn()
@@ -219,6 +195,7 @@ class checkIn:
                     self.checkSuccess(False,'Already Out')
                 elif self.choices['checkBool'] == True and self.sheetChoices['checkBool'] == 'no': # checking in and is in
                     self.checkSuccess(False,'Already In')
+                else: self.checkSuccess(False,'Unknown')
 
 
     def checkIn(self):
@@ -239,14 +216,12 @@ class checkIn:
 
 
     def checkSuccess(self,success,error):
-        
         if self.choices['checkBool'] == True:
             checkStr = 'in'
         elif self.choices['checkBool'] == False:
             checkStr = 'out'
         if success == True:
-            successStr = ''
-            errorMsg = ''
+            successStr,errorMsg = '',''
         elif success == False:
             successStr = ' not'
             if error == 'ID Match':
@@ -257,10 +232,9 @@ class checkIn:
                 errorMsg = 'Device is checked out!'
             else: errorMsg = 'Unknown Error'
 
-        print('Device Check %s was%s successful! %s'%(checkStr,successStr,errorMsg))
+        print('Device check %s was%s successful! %s'%(checkStr,successStr,errorMsg))
         keypadLabelFrame = tk.Frame(self.prompts,width=500,bg=self.defaultBg)
         keypadLabelFrame.grid(column=0,row=0,columnspan=2)
-        
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
         self.setVariable('ID',None,'keypad')
@@ -270,7 +244,6 @@ class checkIn:
 
 
 def main():
-    #checkIn().searchSheet()
     checkIn().findBarcodes()
     
 
@@ -281,15 +254,22 @@ if __name__ == "__main__":
 #*   Looking for barcodes
 #*   If len barcodes > 0
 #*   read barcode data
-#   run through database
+#*   run through database
 #*   is checked out (true/false)
 #*   is student or teacher
 #*   if student (student ID)
 #*   if teacher (sub1,2,3...)
-#   write to sheet
-#   Rows: Device ID, Is Checked Out, Last Checked Out By, Check Out Date, Check In Date
-#   
+#*   write to sheet
+#*   Rows: Device ID, Is Checked Out, Last Checked Out By, Check Out Date, Check In Date, Prev ID
 #    
+# Build Container 
+# Mount project   
+#   
+#
+#   IDEAS:
+#   Override CheckIn
+#   
+#     
 # 
 # TO DO:
 #   git
