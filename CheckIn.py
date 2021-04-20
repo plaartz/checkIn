@@ -3,7 +3,7 @@ from PIL import ImageTk,Image
 import tkinter as tk
 from imutils.video import VideoStream
 from pyzbar import pyzbar
-from oauth2client.service_account import ServiceAccountCredentials
+
 import argparse,imutils,time,cv2,keyboard,sys,gspread
 
 def rgbtohex(r,g,b):
@@ -13,13 +13,16 @@ def rgbtohex(r,g,b):
 class checkIn:
     def __init__(self):
         workingdir = '/users/realtbnrlrtzy/checkIn/'
+        workingdirpi = '/home/pi/checkIn/'
         self.running = True
-        self.gc = gspread.service_account(filename=workingdir+'credentials.json')
-        self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
+        self.gc = gspread.service_account(filename=workingdirpi+'credentials.json')
+        self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False,'Success':None}
         self.defaultFont = 'Helvetica 16 bold'
         self.buttonFont = 'Helvetica 14 bold'
+        self.errorFont = 'Helvetica 12 bold'
         self.defaultBg = rgbtohex(191, 14, 62)
         self.window = tk.Tk()
+        self.window.overrideredirect(1)
         self.window.config(cursor='none')
         self.window.geometry('800x480')
         self.keypad = tk.Canvas(self.window,bd=0,width=300,height=480,highlightthickness=0,bg=self.defaultBg)
@@ -111,9 +114,11 @@ class checkIn:
         keypadLabel = tk.Label(self.prompts,text='Please enter your Student ID',bg=self.defaultBg,font=self.defaultFont,pady=185)
         keypadLabel.grid(column=0,row=1,columnspan=2)
         CancelRightFrame = tk.LabelFrame(self.prompts,width=235,bg=self.defaultBg,highlightthickness=0,relief='flat')
-        CancelRightFrame.grid(column=1,row=2)
-        Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel,)
-        Cancel.grid(column=0,row=2,padx=50)
+        CancelRightFrame.grid(column=1,row=3)
+        Cancel = tk.Button(self.prompts,text="Cancel",width=15,height=3,command=self.cancel)
+        Cancel.grid(column=0,row=3,padx=50)
+        CancelTopFrame = tk.LabelFrame(self.prompts,width=15,height=13,bg=self.defaultBg,highlightthickness=0,relief='flat')
+        CancelTopFrame.grid(column=0,row=2)
 
         num1 = tk.Button(self.keypad,text='1',width=8,height=6,command=lambda:self.keyID('1'))
         num1.grid(column=0,row=0)
@@ -148,7 +153,7 @@ class checkIn:
             if self.choices['ID'] == 'quit':
                 self.window.destroy()
                 break
-            self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False}
+            self.choices = {"checkBool":None,'staffBool':None,'ID':None,'Done':False,'Success':None}
             print('Searching for QR Codes')
             while True:
                 self.window.update()
@@ -160,7 +165,7 @@ class checkIn:
                         self.barcodeData = barcode.data.decode('utf-8')
                         print('QR Found')
                     break
-            #self.window.overrideredirect(1)
+            self.window.overrideredirect(1)
             self.checkQs()
             while True:
                 self.window.update()
@@ -170,7 +175,7 @@ class checkIn:
 
     def searchSheet(self):
         self.wks = self.gc.open('test').sheet1
-        self.barcodeData = 'cl3203-s04'
+        
         self.sheetChoices = {'deviceID':None,'checkBool':None,'ID':None,'inDate':None,'outDate':None,'prevID':None,'row':None,'col':None}
         for iteration, row in enumerate(self.wks.get_all_values()):
             if row[0] == self.barcodeData:
@@ -214,6 +219,7 @@ class checkIn:
             checkStr = 'out'
         if success == True:
             successStr,errorMsg = '',''
+            self.errorFont = 'Helvetica 16 bold'
         elif success == False:
             successStr = ' not'
             if error == 'ID Match':
@@ -227,10 +233,10 @@ class checkIn:
         print('Device check %s was%s successful! %s'%(checkStr,successStr,errorMsg))
         keypadLabelFrame = tk.Frame(self.prompts,width=500,bg=self.defaultBg)
         keypadLabelFrame.grid(column=0,row=0,columnspan=2)
+        self.setVariable('ID',None,'keypad')
         self.setVariable('checkBool',None,'prompts')
         self.setVariable('staffBool',None,'prompts')
-        self.setVariable('ID',None,'keypad')
-        successText = tk.Label(self.prompts,text='Device Check %s was%s successful! %s'%(checkStr,successStr,errorMsg),bg=self.defaultBg,font=self.defaultFont)
+        successText = tk.Label(self.prompts,text='Device Check %s was%s successful! %s'%(checkStr,successStr,errorMsg),bg=self.defaultBg,font=self.errorFont)
         successText.grid(column=0,row=0,columnspan=2)
         self.window.after(4000,lambda:self.setVariable('Done',True,'done')) 
 
