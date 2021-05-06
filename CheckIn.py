@@ -92,7 +92,7 @@ class checkIn:
 
 
     def cancel(self): # Resets prompts
-        self.choices['Done'] = True
+        self.setVariable('Done',True,'keypad')
         
 
 
