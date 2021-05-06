@@ -54,8 +54,6 @@ class checkIn:
     
 
     def staffQs(self):
-        
-
         Q1 = tk.Label(self.prompts,text='Are you a student or a teacher?',bg=self.defaultBg,font=self.defaultFont)
         Q1.grid(column=0,row=1,columnspan=2)
         studQ = tk.Button(self.prompts,text='Student',width=25,height=7,command=lambda:[self.setVariable('staffBool',True,'prompts'),self.createKeypad()]) # Student Button
@@ -94,8 +92,8 @@ class checkIn:
 
 
     def cancel(self): # Resets prompts
-        self.setVariable('ID',None,'keypad')
-        self.checkQs()
+        self.choices['Done'] = True
+        
 
 
     def exitSys(self): # Exits program
