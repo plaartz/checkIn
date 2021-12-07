@@ -1,3 +1,6 @@
+# Description
+Using a raspberry pi, camera, and a display, displays GUI prompts to check an item in/out using QR Codes and a google sheet containing item ID and check in information.
+
 # checkIn
 *  Constant camera
 *	Looking for barcode
